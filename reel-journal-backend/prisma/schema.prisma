@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Show {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  apiId       String
+  seasons     Season[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
+model Season {
+  id           String   @id @default(cuid())
+  airDate      DateTime @map("air_date")
+  apiId        String   @map("api_id")
+  name         String
+  overview     String
+  poster       String?
+  seasonNumber Int      @map("season_number")
+
+  show   Show   @relation(fields: [showId], references: [id])
+  showId String @map("show_id")
+
+  episodes Episode[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
+model Episode {
+  id            String   @id @default(cuid())
+  airDate       DateTime @map("air_date")
+  apiId         String   @map("api_id")
+  episodeNumber Int      @map("episode_number")
+  name          String
+  overview      String
+  still         String?
+
+  season   Season @relation(fields: [seasonId], references: [id])
+  seasonId String @map("season_id")
+
+  crew Crew[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
+model Crew {
+  id          String  @id @default(cuid())
+  apiId       String  @map("api_id")
+  creditId    String  @map("credit_id")
+  department  String
+  job         String
+  name        String
+  profilePath String? @map("profile_path")
+
+  episode   Episode @relation(fields: [episodeId], references: [id])
+  episodeId String  @map("episode_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}

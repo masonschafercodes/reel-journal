@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:13.5
+    restart: always
+    environment:
+      - POSTGRES_USER=reel-journal-pg
+      - POSTGRES_PASSWORD=reeljournalpg
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "15433:5432"
+
+volumes:
+  postgres:
