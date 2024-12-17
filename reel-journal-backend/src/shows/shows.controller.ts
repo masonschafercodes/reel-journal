@@ -7,20 +7,25 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ShowsService } from './shows.service';
 import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { ShowEntity } from './entities/show.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('shows')
 @ApiTags('shows')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class ShowsController {
   constructor(private readonly showsService: ShowsService) {}
 

@@ -7,6 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String @id @default(cuid())
+  email     String @unique
+  password  String
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
 model Show {
   id          String   @id @default(cuid())
   title       String

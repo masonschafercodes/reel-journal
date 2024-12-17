@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('ReelJournal API')
     .setDescription('The ReelJournal API')
     .setVersion('0.1')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
