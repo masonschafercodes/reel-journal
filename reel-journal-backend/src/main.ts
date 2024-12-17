@@ -5,6 +5,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.getHttpAdapter().getInstance().disable('x-powered-by');
+
   const config = new DocumentBuilder()
     .setTitle('ReelJournal API')
     .setDescription('The ReelJournal API')
