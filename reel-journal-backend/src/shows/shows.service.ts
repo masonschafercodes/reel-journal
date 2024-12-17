@@ -23,9 +23,12 @@ export class ShowsService {
     );
   }
 
-  findOne(id: string) {
+  findOne(id: string, includeSeasons?: string) {
     return this.prismaService.show.findUnique({
       where: { id },
+      include: {
+        seasons: includeSeasons === 'true',
+      },
     });
   }
 

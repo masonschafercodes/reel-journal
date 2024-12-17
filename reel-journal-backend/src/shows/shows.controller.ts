@@ -44,8 +44,12 @@ export class ShowsController {
 
   @Get(':id')
   @ApiOkResponse({ type: ShowEntity })
-  findOne(@Param('id') id: string) {
-    return this.showsService.findOne(id);
+  @ApiQuery({ name: 'includeSeasons', required: false, type: Boolean })
+  findOne(
+    @Param('id') id: string,
+    @Query() query: { includeSeasons?: string },
+  ) {
+    return this.showsService.findOne(id, query.includeSeasons);
   }
 
   @Patch(':id')
