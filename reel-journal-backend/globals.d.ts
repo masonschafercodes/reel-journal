@@ -8,3 +8,12 @@ namespace NodeJS {
     JWT_SECRET: string;
   }
 }
+
+namespace Express {
+  interface Request {
+    user: {
+      userId: string;
+      email: string;
+    };
+  }
+}

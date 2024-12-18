@@ -1,15 +1,40 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Request,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Request as ExpressRequest, Response } from 'express';
 import { AuthOKEntity, AuthRegisterEntity } from './entities/auth.entity';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @Post('me')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: AuthRegisterEntity })
+  async me(@Request() req: ExpressRequest) {
+    if (!req.user) {
+      return null;
+    }
+
+    return this.authService.getUser(req.user.userId);
+  }
 
   @Post('login')
   @ApiOkResponse({ type: AuthOKEntity })

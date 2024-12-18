@@ -10,6 +10,22 @@ export class AuthService {
     private prismaService: PrismaService,
   ) {}
 
+  async getUser(id: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+
+    const { password: noop, ...result } = user;
+
+    return result;
+  }
+
   async loginUser(user: { email: string; password: string }) {
     const validatedUser = await this.validateUser(user.email, user.password);
 
