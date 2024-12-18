@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 interface LoginCredentials {
     email: string;
     password: string;
@@ -61,19 +63,44 @@ export const auth = {
     },
 
     async getUser() {
+        const cookieStore = await cookies();
+        const accessToken = cookieStore.get("access_token");
         try {
             const response = await fetch("http://localhost:3000/auth/me", {
+                headers: {
+                    Cookie: `access_token=${accessToken?.value ?? ""}`,
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                cache: "no-store",
+            });
+
+            if (!response.ok) return null;
+            return response.json();
+        } catch (error) {
+            console.error("Failed to fetch user:", error);
+            return null;
+        }
+    },
+
+    async logout() {
+        const cookieStore = await cookies();
+        const accessToken = cookieStore.get("access_token");
+        try {
+            const response = await fetch("http://localhost:3000/auth/logout", {
+                headers: {
+                    Cookie: `access_token=${accessToken?.value ?? ""}`,
+                    "Content-Type": "application/json",
+                },
                 credentials: "include",
                 cache: "no-store",
             });
 
             if (!response.ok) {
-                return null;
+                throw new Error("Failed to logout");
             }
-
-            return response.json() as Promise<AuthResponse>;
-        } catch {
-            return null;
+        } catch (error) {
+            console.error("Failed to logout:", error);
         }
     },
 };

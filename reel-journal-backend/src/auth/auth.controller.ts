@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Request,
   Res,
@@ -24,7 +25,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('me')
+  @Get('me')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: AuthRegisterEntity })
@@ -45,9 +46,10 @@ export class AuthController {
     const loginResponse = await this.authService.loginUser(loginUserDto);
 
     response.cookie('access_token', loginResponse.access_token, {
-      httpOnly: process.env.NODE_ENV === 'production',
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: 'lax',
+      path: '/',
     });
 
     return {

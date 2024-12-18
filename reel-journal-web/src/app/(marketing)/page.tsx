@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { cn } from "../../lib/utils";
 import { buttonVariants } from "../../components/ui/button";
+import { auth } from "../../lib/auth";
+import { LogoutButton } from "../../components/auth/logout-button";
 
-export default function Home() {
+export default async function Home() {
+  const user = await auth.getUser();
   return (
     <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
       <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
@@ -30,6 +33,21 @@ export default function Home() {
             Schedule a Demo
           </Link>
         </div>
+        {user && (
+          <div
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="text-muted-foreground">
+              Welcome back, {user.firstName}!
+            </div>
+            <LogoutButton
+              logoutAction={async () => {
+                "use server";
+                await auth.logout();
+              }}
+            />
+          </div>
+        )}
       </div>
     </section>
   );
